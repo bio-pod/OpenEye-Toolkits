@@ -2,6 +2,18 @@
 
 image_tag="biopod/openeye-toolkits:2021.2.0"
 
+if [ "${OE_LICENSE}" == "" ]
+then
+    echo "OE_LICENSE environment variable not defined."
+    exit
+fi
+
+if [ ! -f "${OE_LICENSE}" ]
+then
+    echo "${OE_LICENSE} defined in OE_LICENSE not found."
+    exit
+fi
+
 if [ ! -f "$1" ]
 then
     echo "File $1 does not exist."
@@ -13,6 +25,7 @@ echo "-> docker ps -a"
 echo "To kill a running container, use:"
 echo "-> docker kill CONTAINER_ID or docker kill CONTAINER_NAME"
 docker run --rm -itd \
+       --mount type=bind,source=${OE_LICENSE},target=/app/oe_license.txt,readonly \
        --mount type=bind,source=$(realpath $(pwd)),target=/mnt \
        --user $(id -u):$(id -g) \
        ${image_tag} \
