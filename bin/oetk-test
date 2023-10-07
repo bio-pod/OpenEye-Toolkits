@@ -13,10 +13,9 @@ then
     exit
 fi
 
-echo "Starting ${image_tag} container in current dir -> $(pwd)"
+echo "Testing ${image_tag}..."
 docker run --rm -it \
        --mount type=bind,source=${OE_LICENSE},target=/app/oe_license.txt,readonly \
-       --mount type=bind,source=$(realpath $(pwd)),target=/mnt \
-       --user $(id -u):$(id -g) \
-       ${image_tag}
+       ${image_tag} \
+       /bin/bash -c 'bash /app/test.sh'
 
